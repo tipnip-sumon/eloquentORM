@@ -15,6 +15,16 @@
             @error('email')
             <x-alert type="danger" :$message></x-alert>
             @enderror
+            <x-input-label value="Age"></x-input-label>
+            <x-input type="text" name="age" id="age"  placeholder="Enter Age"></x-input>
+            @error('age')
+            <x-alert type="danger" :$message></x-alert>
+            @enderror
+            <x-input-label value="Role"></x-input-label>
+            <x-input type="text" name="role" id="role"  placeholder="Enter Role"></x-input>
+            @error('role')
+            <x-alert type="danger" :$message></x-alert>
+            @enderror
             <x-input-label value="Password"></x-input-label>
             <x-input type="password" name="password" id="password"  placeholder="Enter Your Password"></x-input>
             @error('password')

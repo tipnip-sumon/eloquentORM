@@ -8,19 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Member extends Model
 {
     use HasFactory;
-    protected $guarded = [];
     // public $timestamps = false;
-    public function contact()
-    {
-        return $this->hasOne(Contact::class);
-    }
-    protected function casts(): array
-    {
-        return [
-            // 'name' => 'hashed'
-        ];
-    }
-    protected $hidden = [
-        // 'name'
+    protected $guarded = [];
+
+    protected $casts = [
+        'password' => 'hashed'
     ];
 }

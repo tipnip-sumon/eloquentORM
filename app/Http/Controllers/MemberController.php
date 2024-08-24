@@ -3,22 +3,45 @@
 namespace App\Http\Controllers;
 
 use App\Models\Member;
-use App\Models\Contact;
-use App\Http\Requests\StoreMemberRequest;
-use App\Http\Requests\UpdateMemberRequest;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class MemberController extends Controller
 {
+
+    public function login(Request $request)
+    {
+        return view('login');
+
+    }
+    public function loginCheck(Request $request)
+    {
+        // dd($request->all());
+        $credential = $request->validate([
+            'email' => 'required',
+            'password' => 'required'
+        ]);
+        if(Auth::attempt(['email'=>$request->email,'password'=>$request->password])){
+            return redirect()->route('dashboard');
+        }else{
+            return redirect()->route('login')->with('status','Unsuccessfully.');
+        }
+
+    }
+    public function dashboardPage()
+    {
+        if(Auth::check()){
+            return redirect()->route('dashboard');
+        }else{
+            return redirect()->route('login');
+        }
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $member = Member::whereAge(13)
-                ->with('contact:email as Email,mobile as Mobile,address,city,member_id')
-                ->get();
-        return $member;
-        
+        return view('register');
     }
 
     /**
@@ -26,27 +49,35 @@ class MemberController extends Controller
      */
     public function create()
     {
-         $member = Member::create([
-            'name' => 'Samiul Islam Rafi',
-            'age' => '12',
-            'gender' => 'male'
-        ]);
-        $member->contact()->create([
-            'email' => 'rafi22@gmail.com',
-            'mobile' => '01787909190',
-            'address' => 'Harati',
-            'city' => 'Dhaka'
-        ]);
+        //
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreMemberRequest $request)
+    public function store(Request $request)
     {
-        echo "Hi";
         // dd($request->all());
-       
+        // $request->validate([
+        //     'f_name' => 'required',
+        //     'email' =>'required|email',
+        //     'age' =>'required',
+        //     'role' => 'required',
+        //     'password'=> 'required',
+        //     'password_confirmation' => 'required|same:password'
+        // ]);
+        // $members = Member::create([
+        //     'name' => $request->f_name,
+        //     'email' => $request->email,
+        //     'age' => $request->age,
+        //     'role' => $request->role,
+        //     'password'=>$request->password
+        // ]);
+        // if($members){
+        //     return redirect()->route('member.index')->with('status','Successfully Registered.');
+        // }else{
+        //     return redirect()->route('member.index')->with('status','Successfully Not Registered.');
+        // }
     }
 
     /**
@@ -68,7 +99,7 @@ class MemberController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateMemberRequest $request, Member $member)
+    public function update(Request $request, Member $member)
     {
         //
     }
