@@ -125,6 +125,7 @@ class UserController extends Controller
     }
     public function ViewProfile(int $pid)
     {
+        $pid = User::where();
         Gate::authorize('view-profile',$pid);
         $user = User::find($pid);
         return view('profile',compact('user'));
