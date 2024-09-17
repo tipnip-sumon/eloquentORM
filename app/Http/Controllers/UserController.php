@@ -4,11 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use App\Models\User;
+use App\Mail\OTPMail;
 use App\Models\Contact;
+use App\Helpers\JWTToken;
 use Illuminate\Http\Request;
+use PhpParser\Node\Stmt\TryCatch;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
-use PhpParser\Node\Stmt\TryCatch;
+use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
@@ -21,26 +24,64 @@ class UserController extends Controller
     }
     public function loginCheck(Request $request)
     {
+        // dd($request->email);
+        $count = User::where('email','=',$request->input('email'))
+                ->where('password','=',$request->input('password'))
+                ->count();
+
+        // dd($count);
+
+        if($count==1){
+            $token = JWTToken::CreateToken($request->input('email'));
+            return response()->json([
+                'status'=>'success',
+                'message'=>'Login Successfully',
+                'token'=> $token,
+            ],200);
+        }else{
+            return response()->json([
+                'status'=>'failed',
+                'message'=>'Unauthorized'
+            ],401);
+        }
         
-        $credentials = $request->validate([
-            'email' => 'required',
-            'password' => 'required'
-        ]);
-        if(Auth::attempt($credentials)){
+        // $credentials = $request->validate([
+        //     'email' => 'required',
+        //     'password' => 'required'
+        // ]);
+        // if(Auth::attempt($credentials)){
+        //     return response()->json([
+        //         'status'=>'Success',
+        //         'message'=>'Successfully login.'
+        //     ],200);
+
+        //     // return redirect()->route('dashboard');
+        // }else{
+        //     // return redirect()->back();
+        //     return response()->json([
+        //         'status'=>'Failed',
+        //         'message'=>'Unsuccessfully.'
+        //     ],200);
+        // }
+
+    }
+    public function OTPMailSend(Request $request)
+    {
+        // dd($request->email);
+        $otp = rand('100000','999999');
+        $count = User::where('email','=',$request->input('email'))->count();
+        if($count==1){
+            Mail::to($request->email)->send(new OTPMail($otp));
             return response()->json([
                 'status'=>'Success',
-                'message'=>'Successfully login.'
-            ],200);
-
-            // return redirect()->route('dashboard');
+                'message'=>'OTP send'
+            ]);
         }else{
-            // return redirect()->back();
             return response()->json([
-                'status'=>'Failed',
-                'message'=>'Unsuccessfully.'
-            ],200);
+                'status'=>'failed',
+                'message'=>'Unauthorized'
+            ]);
         }
-
     }
     public function ViewProfile(int $pid)
     {

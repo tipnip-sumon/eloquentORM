@@ -18,6 +18,7 @@ Route::get('/dashboard',[UserController::class,'dashboardPage'])->name('dashboar
 Route::get('/login',[UserController::class,'login'])->name('login');
 Route::get('/profile/{pid}',[UserController::class,'ViewProfile'])->name('profile');
 Route::post('/loginCheck',[UserController::class,'loginCheck'])->name('loginCheck');
+Route::post('/OTPMailSend',[UserController::class,'OTPMailSend']);
 Route::get('/logout',[UserController::class,'logout'])->name('logout');
 Route::resource('post',PostController::class)->middleware('auth');
 Route::get('/addpost',[PostController::class,'addpost'])->name('addpost')->middleware('auth');
