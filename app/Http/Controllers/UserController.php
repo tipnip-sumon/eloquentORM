@@ -65,13 +65,14 @@ class UserController extends Controller
         // }
 
     }
-    public function OTPMailSend(Request $request)
+    public function SendOTPCode(Request $request)
     {
         // dd($request->email);
         $otp = rand('100000','999999');
         $count = User::where('email','=',$request->input('email'))->count();
         if($count==1){
             Mail::to($request->email)->send(new OTPMail($otp));
+            User::where('email',$request->email)->update(['otp'=>$otp]);
             return response()->json([
                 'status'=>'Success',
                 'message'=>'OTP send'
@@ -81,6 +82,45 @@ class UserController extends Controller
                 'status'=>'failed',
                 'message'=>'Unauthorized'
             ]);
+        }
+    }
+    public function VerifyOTP(Request $request)
+    {
+        $email = $request->email;
+        $otp = $request->otp;
+        $count = User::where('email','=',$email)
+                ->where('otp','=',$otp)
+                ->count();
+        if($count===1){
+            User::where('email','=',$email)->update(['otp'=>'0']);
+            $token = JWTToken::CreateTokenForPasswordReset($email);
+            return response()->json([
+                'status'=>'Success',
+                'message'=>'OTP Verify Successfully',
+                'token'=>$token
+            ]);
+        }else{
+            return response()->json([
+                'status'=>'failed',
+                'message'=>'Unauthorized'
+            ],401);
+        }
+    }
+    public function ResetPassword(Request $request)
+    {
+        try {
+            $email = $request->header('email');
+            $password = $request->password;
+            User::where('email','=',$email)->update(['password'=>$password]);
+            return response()->json([
+                'status'=>'Success',
+                'message'=>'Password Reset Successfully'
+            ],200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status'=>'failed',
+                'message'=>'Unauthorized'
+            ],401);
         }
     }
     public function ViewProfile(int $pid)
