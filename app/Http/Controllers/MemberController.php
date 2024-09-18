@@ -58,26 +58,26 @@ class MemberController extends Controller
     public function store(Request $request)
     {
         // dd($request->all());
-        // $request->validate([
-        //     'f_name' => 'required',
-        //     'email' =>'required|email',
-        //     'age' =>'required',
-        //     'role' => 'required',
-        //     'password'=> 'required',
-        //     'password_confirmation' => 'required|same:password'
-        // ]);
-        // $members = Member::create([
-        //     'name' => $request->f_name,
-        //     'email' => $request->email,
-        //     'age' => $request->age,
-        //     'role' => $request->role,
-        //     'password'=>$request->password
-        // ]);
-        // if($members){
-        //     return redirect()->route('member.index')->with('status','Successfully Registered.');
-        // }else{
-        //     return redirect()->route('member.index')->with('status','Successfully Not Registered.');
-        // }
+        $request->validate([
+            'f_name' => 'required',
+            'email' =>'required|email',
+            'age' =>'required',
+            'role' => 'required',
+            'password'=> 'required',
+            'password_confirmation' => 'required|same:password'
+        ]);
+        $members = Member::create([
+            'name' => $request->f_name,
+            'email' => $request->email,
+            'age' => $request->age,
+            'role' => $request->role,
+            'password'=>$request->password
+        ]);
+        if($members){
+            return redirect()->route('member.index')->with('status','Successfully Registered.');
+        }else{
+            return redirect()->route('member.index')->with('status','Successfully Not Registered.');
+        }
     }
 
     /**
