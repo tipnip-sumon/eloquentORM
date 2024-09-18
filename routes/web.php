@@ -13,7 +13,7 @@ Route::get('/', function () {
 });
 Route::resource('user',UserController::class);
 Route::resource('post',PostController::class);
-// Route::resource('member',MemberController::class);
+Route::resource('member',MemberController::class);
 Route::get('/dashboard',[UserController::class,'dashboardPage'])->name('dashboard');
 // Route::get('/dashboard',[UserController::class,'dashboardPage'])->name('dashboard')->middleware(ValidUser::class);
 Route::get('/login',[UserController::class,'login'])->name('login');
