@@ -30,6 +30,7 @@
                 </div>
                 <input type="submit" class="btn btn-primary"/>
                 <a href="{{route('dashboard')}}" class="btn btn-secondary">Back</a>
+                <a href="{{route('dashboard')}}" class="btn btn-secondary">Back</a>
               </form>
             </div>
         </div>
